@@ -1,48 +1,107 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# Conector n8n - Gerador de Números Aleatórios (Random.org)
 
-# n8n-nodes-starter
+Este projeto contém um conector (custom node) para a plataforma de automação de workflows n8n. O objetivo deste conector é integrar-se com a API pública do [Random.org]( https://www.random.org/integers/?num=1&min=1&max=60&col=1&base=10&format=plain&rnd=new) para gerar um número inteiro verdadeiramente aleatório dentro de um fluxo de trabalho.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+Este desenvolvimento foi realizado como parte de um desafio técnico para um processo seletivo, demonstrando a capacidade de estender a plataforma n8n com funcionalidades customizadas.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## Features
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+* **Integração com API Externa:** Consome o endpoint de inteiros do Random.org para buscar um número aleatório.
+* **Interface Simples:** Fornece campos na UI do n8n para que o usuário defina facilmente os valores de **Mínimo** e **Máximo**.
+* **Fluxo de Dados:** Mantém os dados recebidos de nós anteriores, adicionando o número aleatório gerado em um novo campo (`randomNumber`).
+* **Ícone Personalizado:** Inclui um ícone SVG customizado para fácil identificação do nó na plataforma.
 
-## Prerequisites
+## Tecnologias Utilizadas
 
-You need the following installed on your development machine:
+* **n8n:** Plataforma de automação de workflows.
+* **Docker & Docker Compose:** Para criar um ambiente de desenvolvimento e execução conteinerizado e reproduzível.
+* **PostgreSQL:** Banco de dados utilizado pela instância do n8n.
+* **Node.js:** Ambiente de execução.
+* **TypeScript:** Linguagem principal para o desenvolvimento do conector.
+* **NVM (Node Version Manager):** Utilizado para gerenciar as versões do Node.js necessárias para o desenvolvimento.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+---
+##  Guia de Instalação e Execução
 
-## Using this starter
+Para configurar e rodar este projeto localmente, siga os passos abaixo.
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### Pré-requisitos
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+Antes de começar, garanta que você tem as seguintes ferramentas instaladas:
 
-## More information
+* **Git:** Para clonar o repositório.
+* **Docker e Docker Compose:** Para rodar o ambiente n8n. [Instale aqui](https://www.docker.com/products/docker-desktop/).
+* **NVM (Node Version Manager):** Essencial para gerenciar as versões do Node.js. Para Windows, recomenda-se o [nvm-windows](https://github.com/coreybutler/nvm-windows/releases).
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+### Passo a Passo
 
-## License
+**1. Clone o Repositório**
+```bash
+git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
+cd SEU-REPOSITORIO
+```
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+**2. Configure o Ambiente Node.js com NVM**
+O template do n8n pode requerer diferentes versões do Node.js para diferentes tarefas. O NVM facilita esse gerenciamento.
+
+```bash
+# Instala as versões necessárias
+nvm install 22
+nvm install 18
+
+# Define a versão 22 como a padrão para este terminal
+nvm use 22
+```
+
+**3. Inicie o Ambiente n8n com Docker**
+O arquivo `docker-compose.yml` neste repositório irá configurar e iniciar uma instância do n8n junto com um banco de dados PostgreSQL.
+
+```bash
+# A partir da raiz do projeto, execute:
+docker-compose up -d
+```
+Aguarde 1-2 minutos para os serviços iniciarem. Você poderá acessar a interface do n8n em **`http://localhost:5678`**. Crie sua conta de administrador na primeira vez.
+
+**4. Compile e Conecte o Conector ao n8n**
+Este processo irá compilar seu código e criar um link simbólico para que a instância do n8n em Docker possa encontrá-lo.
+
+```bash
+# Garanta que está na versão 22 do Node
+nvm use 22
+
+# Instale as dependências do projeto
+npm install
+
+# Compile o código
+npm run build
+
+# Crie um link global a partir da pasta do seu projeto
+npm link
+
+# Navegue até a pasta 'custom' do n8n (se não existir, crie com 'mkdir custom')
+cd ../n8n_data/custom
+
+# Use o link criado (o nome do pacote vem do package.json)
+npm link n8n-nodes-random
+```
+
+**5. Reinicie o n8n para Carregar o Conector**
+O n8n só carrega conectores customizados na inicialização.
+
+```bash
+# Volte para a pasta raiz onde está o docker-compose.yml
+cd ..
+
+# Reinicie o container do n8n
+docker-compose restart n8n
+```
+
+**6. Verificação Final**
+Acesse novamente o n8n em **`http://localhost:5678`**. Crie um novo workflow, clique para adicionar um nó e pesquise por **`Random`**. Seu conector customizado deverá aparecer na lista.
+
+## Fluxo de Desenvolvimento
+
+Para fazer alterações no código do conector:
+1.  Abra o arquivo `nodes/Random/Random.node.ts` e faça suas modificações.
+2.  Em um terminal, na pasta do projeto, rode o comando de compilação novamente: `npm run build`.
+3.  Em outro terminal, na pasta raiz, reinicie o n8n para carregar as alterações: `docker-compose restart n8n`.
